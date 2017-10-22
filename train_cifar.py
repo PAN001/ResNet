@@ -359,7 +359,7 @@ is_training = tf.placeholder('bool', [], name='is_training')
 
 images, labels = tf.cond(is_training,
     lambda: (images_train, labels_train),
-    lambda: (images_val, labels_val))
+    lambda: (images_test, labels_test))
 
 logits = inference_small(images,
                          num_classes=10,
