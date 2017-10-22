@@ -4,7 +4,7 @@ import tensorflow as tf
 MOMENTUM = 0.9
 
 FLAGS = tf.app.flags.FLAGS
-tf.app.flags.DEFINE_string('train_dir', '/tmp/resnet_train',
+tf.app.flags.DEFINE_string('train_dir', './tmp/resnet_train',
                            """Directory where to write event logs """
                            """and checkpoint.""")
 tf.app.flags.DEFINE_float('learning_rate', 0.01, "learning rate.")
