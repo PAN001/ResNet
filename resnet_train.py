@@ -87,6 +87,7 @@ def train(is_training, logits, images, labels):
         print "resume", latest
         saver.restore(sess, latest)
 
+    top1_error_min = 1.0
     for x in xrange(FLAGS.max_steps + 1):
         start_time = time.time()
 
@@ -115,15 +116,24 @@ def train(is_training, logits, images, labels):
             summary_str = o[2]
             summary_writer.add_summary(summary_str, step)
 
-        # Save the model checkpoint periodically.
-        if step > 1 and step % 100 == 0:
-            checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
-            saver.save(sess, checkpoint_path, global_step=global_step)
+        # # Save the model checkpoint periodically.
+        # if step > 1 and step % 100 == 0:
+        #     checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
+        #     saver.save(sess, checkpoint_path, global_step=global_step)
 
         # Run validation periodically
         if step > 1 and step % 100 == 0:
             _, top1_error_value = sess.run([val_op, top1_error], { is_training: False })
             print('Validation top1 error %.2f' % top1_error_value)
+
+            # Save the model checkpoint periodically.
+            if top1_error_value < top1_error_min:
+                print "error rate decreased from ", top1_error_min, "to ", top1_error_value
+                top1_error_min = top1_error_value
+                checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
+                saver.save(sess, checkpoint_path, global_step=global_step)
+
+
 
 
 
