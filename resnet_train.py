@@ -47,6 +47,10 @@ def train(is_training, logits, images, labels):
     top1_error_avg = ema.average(top1_error)
     tf.summary.scalar('val_top1_error_avg', top1_error_avg)
 
+    # # testing stats
+    # acc = acc(logits=)
+
+
     tf.summary.scalar('learning_rate', FLAGS.learning_rate)
 
     opt = tf.train.MomentumOptimizer(FLAGS.learning_rate, MOMENTUM)
@@ -92,13 +96,13 @@ def train(is_training, logits, images, labels):
         start_time = time.time()
 
         step = sess.run(global_step)
-        i = [train_op, loss_]
+        i = [train_op, loss_] # operation list
 
         write_summary = step % 100 and step > 1
         if write_summary:
             i.append(summary_op)
 
-        o = sess.run(i, { is_training: True })
+        o = sess.run(i, { is_training: True }) # run train and loss
 
         loss_value = o[1]
 
@@ -124,7 +128,7 @@ def train(is_training, logits, images, labels):
         # Run validation periodically
         if step > 1 and step % 100 == 0:
             _, top1_error_value = sess.run([val_op, top1_error], { is_training: False })
-            print('Validation top1 error %.2f' % top1_error_value)
+            print('Validation min error: ', top1_error_min, ' Validation cur error', top1_error_value)
 
             # Save the model checkpoint periodically.
             if top1_error_value < top1_error_min:
@@ -132,6 +136,8 @@ def train(is_training, logits, images, labels):
                 top1_error_min = top1_error_value
                 checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
                 saver.save(sess, checkpoint_path, global_step=global_step)
+
+        # Run testing periodically
 
 
 

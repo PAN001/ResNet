@@ -156,6 +156,17 @@ def loss(logits, labels):
     return loss_
 
 
+def acc(logits, labels):
+    correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
+    correct_prediction = tf.cast(correct_prediction, tf.float32)
+
+    accuracy = tf.reduce_mean(correct_prediction)
+
+    tf.summary.scalar('acc', accuracy)
+
+    return accuracy
+
+
 def stack(x, c):
     for n in range(c['num_blocks']):
         s = c['stack_stride'] if n == 0 else 1
